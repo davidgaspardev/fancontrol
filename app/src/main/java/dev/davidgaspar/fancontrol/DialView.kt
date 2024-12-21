@@ -6,6 +6,7 @@ import android.graphics.PointF
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.min
 
 private enum class FanSpeed(val label: Int) {
     OFF(R.string.fan_off),
@@ -32,5 +33,9 @@ class DialView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         textSize = 55.0f
         typeface = Typeface.create("", Typeface.BOLD)
+    }
+
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        radius = (min(width, height) / 2.0 * 0.8).toFloat()
     }
 }
