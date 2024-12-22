@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import kotlin.math.cos
 import kotlin.math.min
@@ -39,12 +40,20 @@ class DialView @JvmOverloads constructor(
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+    private fun PointF.goToCenter() {
+        x = (width / 2).toFloat()
+        y = (height / 2).toFloat()
+    }
+
     private fun PointF.computeXYForSpeed(pos: FanSpeed, radius: Float) {
+        goToCenter()
+
         // Angles are in radians.
         val startAngle = Math.PI * (9 / 8.0)
         val angle = startAngle + pos.ordinal * (Math.PI / 4)
-        x = (radius * cos(angle)).toFloat() + width / 2
-        y = (radius * sin(angle)).toFloat() + height / 2
+
+        x += (radius * cos(angle)).toFloat()
+        y += (radius * sin(angle)).toFloat()
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -57,10 +66,12 @@ class DialView @JvmOverloads constructor(
         paint.color = if (fanSpeed == FanSpeed.OFF) Color.GRAY else Color.GREEN
         canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius, paint)
 
+        showAxes(canvas)
+
         val markerRadius = radius + RADIUS_OFFSET_INDICATOR
-        pointPosition.computeXYForSpeed(fanSpeed, markerRadius)
         paint.color = Color.BLACK
-        canvas.drawCircle(pointPosition.x, pointPosition.y, radius / 12, paint)
+        pointPosition.computeXYForSpeed(fanSpeed, markerRadius)
+        canvas.drawCircle(pointPosition.x, pointPosition.y, (radius / 12), paint)
 
         val labelRadius = radius * RADIUS_OFFSET_LABEL
         for (i in FanSpeed.values()) {
@@ -68,5 +79,43 @@ class DialView @JvmOverloads constructor(
             val label = resources.getString(i.label)
             canvas.drawText(label, pointPosition.x, pointPosition.y, paint)
         }
+    }
+
+    private fun showAxes(canvas: Canvas) {
+        paint.color = Color.RED
+
+        // X axes
+        canvas.drawLine(
+            (0).toFloat(),
+            (height / 2).toFloat(),
+            width.toFloat(),
+            (height / 2).toFloat(),
+            paint
+        )
+
+        // Y axes
+        canvas.drawLine(
+            (width / 2).toFloat(),
+            (0).toFloat(),
+            (width / 2).toFloat(),
+            height.toFloat(),
+            paint
+        )
+
+        canvas.drawLine(
+            0.toFloat(),
+            0.toFloat(),
+            width.toFloat(),
+            height.toFloat(),
+            paint
+        )
+
+        canvas.drawLine(
+            width.toFloat(),
+            0.toFloat(),
+            0.toFloat(),
+            height.toFloat(),
+            paint
+        )
     }
 }
