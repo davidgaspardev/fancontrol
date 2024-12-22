@@ -96,10 +96,17 @@ class DialView @JvmOverloads constructor(
 
         val labelRadius = radius + RADIUS_OFFSET_LABEL
         for (i in FanSpeed.entries) {
-            Log.d("DialView", "FanSpeed: $i")
+            paint.color = if (i == fanSpeed) Color.BLACK else (0x32000000).toInt()
             pointPosition.computeXYForSpeed(i, labelRadius)
             val label = resources.getString(i.label)
             canvas.drawText(label, pointPosition.x, pointPosition.y, paint)
+
+            // Create marker disabled
+            if (i !== fanSpeed) {
+                paint.color = (0x32000000).toInt()
+                pointPosition.computeXYForSpeed(i, markerRadius)
+                canvas.drawCircle(pointPosition.x, pointPosition.y, (radius / 12), paint)
+            }
         }
     }
 
