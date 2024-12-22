@@ -17,7 +17,14 @@ private enum class FanSpeed(val label: Int) {
     OFF(R.string.fan_off),
     LOW(R.string.fan_low),
     MEDIUM(R.string.fan_medium),
-    HIGH(R.string.fan_high)
+    HIGH(R.string.fan_high);
+
+    fun next() = when (this) {
+        OFF -> LOW
+        LOW -> MEDIUM
+        MEDIUM -> HIGH
+        HIGH -> OFF
+    }
 }
 
 private const val RADIUS_OFFSET_LABEL = 30
@@ -40,6 +47,10 @@ class DialView @JvmOverloads constructor(
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+    init {
+        isClickable = true
+    }
+
     private fun PointF.goToCenter() {
         x = (width / 2).toFloat()
         y = (height / 2).toFloat()
@@ -54,6 +65,16 @@ class DialView @JvmOverloads constructor(
 
         x += (radius * cos(angle)).toFloat()
         y += (radius * sin(angle)).toFloat()
+    }
+
+    override fun performClick(): Boolean {
+        if (super.performClick()) return true
+
+        fanSpeed = fanSpeed.next()
+        contentDescription = resources.getString(fanSpeed.label)
+
+        invalidate()
+        return true
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
