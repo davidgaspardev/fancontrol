@@ -27,7 +27,7 @@ private enum class FanSpeed(val label: Int) {
     }
 }
 
-private const val RADIUS_OFFSET_LABEL = 30
+private const val RADIUS_OFFSET_LABEL = 35
 private const val RADIUS_OFFSET_INDICATOR = -35
 
 class DialView @JvmOverloads constructor(
@@ -78,7 +78,7 @@ class DialView @JvmOverloads constructor(
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        radius = (min(width, height) / 2.0 * 0.8).toFloat()
+        radius = (min(width, height) / 2.0 * 0.75).toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -94,8 +94,9 @@ class DialView @JvmOverloads constructor(
         pointPosition.computeXYForSpeed(fanSpeed, markerRadius)
         canvas.drawCircle(pointPosition.x, pointPosition.y, (radius / 12), paint)
 
-        val labelRadius = radius * RADIUS_OFFSET_LABEL
-        for (i in FanSpeed.values()) {
+        val labelRadius = radius + RADIUS_OFFSET_LABEL
+        for (i in FanSpeed.entries) {
+            Log.d("DialView", "FanSpeed: $i")
             pointPosition.computeXYForSpeed(i, labelRadius)
             val label = resources.getString(i.label)
             canvas.drawText(label, pointPosition.x, pointPosition.y, paint)
