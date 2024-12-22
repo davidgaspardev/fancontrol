@@ -4,4 +4,13 @@
     <dimen name="default_margin">8dp</dimen>
     <dimen name="margin_top">24dp</dimen>
     <dimen name="fan_dimen">250dp</dimen>
+
+    <dimen name="spacing_8">8dp</dimen>
+    <dimen name="spacing_16">16dp</dimen>
+    <dimen name="spacing_24">24dp</dimen>
+    <array name="spacing_32">32dp</array>
+    <array name="spacing_40">40dp</array>
+    <array name="spacing_48">48dp</array>
+    <array name="spacing_56">56dp</array>
+    <array name="spacing_64">64dp</array>
 </resources>
